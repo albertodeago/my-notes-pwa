@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import TextNote from '../models/TextNote'
+import { TextNote } from '../models'
 import userState from './UserState'
 import notesState from './notesState'
 

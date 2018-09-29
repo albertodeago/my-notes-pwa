@@ -9,7 +9,7 @@ export default class User {
         this.password = password;
     }
 
-    toObject() {
+    toJSON() {
         return {
             id: this.id,
             nickname: this.nickname,

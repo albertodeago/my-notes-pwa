@@ -1,5 +1,5 @@
 import firebase from 'firebase/app'
-import 'firebase/database'
+import 'firebase/firestore'
 import {Note, NOTE_TYPES, TextNote, TodoNote, TodoItem } from '../models'
 import Utils from '../Utils'
 
@@ -27,21 +27,22 @@ export default {
     },
     actions: {
         async saveCurrentNote({commit}, note) {
+            const notesCollection = firebase.firestore().collection('notes');
             if(!note.id) {  // create new note
-                const res = await firebase.database().ref('/notes').push(note.toObject())
-                const noteId = res.key
+                const res = await notesCollection.add( note.toJSON() )
+                const noteId = res.id
                 commit('setIdOfCurrentNote', noteId)
-                await firebase.database().ref(`/notes/${noteId}/id`).set(noteId)
+                await notesCollection.doc(noteId).update({ id: noteId })
                 return true
-            } else {    // update note
+            } else {        // update the note
                 note.lastUpdate = new Date()
-                await firebase.database().ref(`/notes/${note.id}`).set(note.toObject())
+                await notesCollection.doc(note.id).set(note.toJSON())
                 return true
             }
         },
 
         async deleteCurrentNote({commit, state}) {
-            await firebase.database().ref(`/notes/${state.note.id}`).set(null)
+            firebase.firestore().collection('notes').doc(state.note.id).delete()
             commit('setCurrentNote', null)
             return true
         }

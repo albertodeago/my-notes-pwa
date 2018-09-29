@@ -6,7 +6,7 @@ import NoteDetail from '@/components/NoteDetail'
 import SignIn from '@/components/auth/SignIn'
 import SignUp from '@/components/auth/SignUp'
 
-import { NOTE_TYPES } from '../models/Note'
+import { NOTE_TYPES } from '../models'
 
 Vue.use(Router)
 
@@ -40,9 +40,5 @@ export default new Router({
       component: NotesList,
       beforeEnter: AuthGuard
     }
-  ],
-  beforeEnter: (to, from, next) => {
-    console.log('v-router before enter', to, from)
-    next()
-  }
+  ]
 })

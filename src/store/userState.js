@@ -1,6 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import User from '../models/User'
+import { User } from '../models'
 import Utils from '../Utils'
 
 

@@ -11,7 +11,7 @@
                     <template v-else>
                         <v-text-field v-model="currentNote.title" 
                                 autofocus 
-                                @click="editTitle = false"
+                                @blur="editTitle = false"
                         ></v-text-field>
                     </template>
                 </v-card-title>
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { NOTE_TYPES, TodoNote, TextNote, ACLEntry, ACLENTRY_TYPE, ACLENTRY_TARGET_TYPE } from '../models/'
+import { NOTE_TYPES, TodoNote, TextNote } from '../models/'
 import Utils from '../Utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import firebase from 'firebase/app'
@@ -133,7 +133,7 @@ export default {
             return this.currentNote && this.currentNote.id ? 'Delete' : 'Cancel'
         },
         canWrite() {
-            return this.currentNote.acl.find(acl => acl.targetId === this.user.id && acl.type !== ACLENTRY_TYPE.READ)
+            return this.currentNote.acl.owner === this.user.id || this.currentNote.acl.canWrite.includes(this.user.id)
         }
     },
 

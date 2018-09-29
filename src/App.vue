@@ -28,58 +28,6 @@
       </v-fade-transition>
     </v-content>
 
-    <!-- LOGIN/SIGNUP MODAL -->
-    <!-- <v-dialog :value="isUserLogged" persistent>
-        <v-card v-if="!showSignUp">
-          <template>
-            <v-card-title>Login</v-card-title>
-
-            <v-card-text>
-              <v-text-field v-model="loginEmail" label="Email" hint="your_name@email.com" persistent-hint required></v-text-field>
-              <v-text-field v-model="loginPw" label="Password" type="password" hint="at least 8 characters" persistent-hint required></v-text-field>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-btn flat="flat" @click="showSignUp = true">
-                Sign up
-              </v-btn>
-
-              <v-spacer></v-spacer>
-
-              <v-btn flat="flat" @click="login">
-                Login
-              </v-btn>
-            </v-card-actions>
-          </template>
-        </v-card>
-
-        <v-card v-else>
-          <template>
-            <v-card-title>Sign up</v-card-title>
-
-            <v-card-text>
-              <v-text-field v-model="signupNickname" label="Nickname" hint="at least 3 characters" persistent-hint required></v-text-field>
-              <v-text-field v-model="signupEmail" label="Email" hint="your_name@email.com" persistent-hint required></v-text-field>
-              <v-text-field v-model="signupPw" label="Password" type="password" hint="at least 6 characters" persistent-hint required></v-text-field>
-              <v-text-field v-model="signupConfirmPw" label="Repeat password" type="password" persistent-hint required></v-text-field>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-btn flat="flat" @click="showSignUp = false">
-                Sign in
-              </v-btn>
-
-              <v-spacer></v-spacer>
-
-              <v-btn flat="flat" @click="signup">
-                Sign up
-              </v-btn>
-            </v-card-actions>
-          </template>
-        </v-card>
-        
-    </v-dialog> -->
-
   </v-app>
 </template>
 
@@ -104,15 +52,7 @@ export default {
         icon: 'bubble_chart',
         title: 'Inspire'
       }],
-      title: 'My Notes',
-
-      // showSignUp: false,
-      // loginEmail: '',
-      // loginPw: '',
-      // signupEmail: '',
-      // signupPw: '',
-      // signupConfirmPw: '',
-      // signupNickname: ''
+      title: 'My Notes'
     }
   },
   
