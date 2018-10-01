@@ -42,113 +42,70 @@
     <v-dialog v-model="showShare" width="500" persistent>
       <v-card>
         <v-card-title class="headline grey lighten-2" primary-title>
-          Privacy Policy
+          Collaborators
         </v-card-title>
 
         <v-card-text>
-            <v-list subheader>
-            <!-- <v-subheader>Recent chat</v-subheader> -->
-            <!-- <v-list-tile v-for="(aclEntry, index) in clonedAcl" :key="aclEntry.id">
+            <v-progress-circular :size="50" color="primary" indeterminate v-if="loadingShares"></v-progress-circular>
+            <v-list subheader v-else>
+                <!-- OWNER TILE -->
+                <v-list-tile>
+                    <v-list-tile-content>
+                        <v-list-tile-title v-html="idToNickname[clonedAcl.owner]"></v-list-tile-title>
+                    </v-list-tile-content>
+
+                    <v-list-tile-action v-if="clonedAcl.owner === user.id">
+                        <v-icon color="primary">star</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-action>
+                        <v-icon color="primary">create</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-action>
+                        <v-icon color="primary">remove_red_eye</v-icon>
+                    </v-list-tile-action>
+                </v-list-tile>
+
+                <!-- WRITERS TILE -->
+                <v-list-tile v-for="(writerId, index) in clonedAcl.canWrite" :key="writerId">
+                    <v-list-tile-content>
+                        <v-list-tile-title v-html="idToNickname[writerId]"></v-list-tile-title>
+                    </v-list-tile-content>
+
+                    <v-list-tile-action>
+                        <v-icon @click="onEditClick(writerId, index, true)" color="primary">create</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-action>
+                        <v-icon @click="onReadClick(writerId, index, false)" color="primary">remove_red_eye</v-icon>
+                    </v-list-tile-action>
+                </v-list-tile>
                 
-                <v-list-tile-content>
-                    <v-list-tile-title v-html="aclEntry.targetLabel"></v-list-tile-title>
-                </v-list-tile-content>
+                <!-- READERS TILE -->
+                <v-list-tile v-for="(readerId, index) in clonedAcl.canRead" :key="readerId">
+                    <v-list-tile-content>
+                        <v-list-tile-title v-html="idToNickname[readerId]"></v-list-tile-title>
+                    </v-list-tile-content>
 
-                <v-list-tile-action v-if="aclEntry.targetId === user.id">
-                    <v-icon color="primary">star</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-action>
-                    <v-icon @click="onEditClick(aclEntry, index)"
-                            :color="(aclEntry.type !== 'READ' && aclEntry.type !== 'NONE') ? 'primary' : ''">create
-                    </v-icon>
-                </v-list-tile-action>
-                <v-list-tile-action>
-                    <v-icon @click="onReadClick(aclEntry, index)"
-                            :color="aclEntry.type !== 'NONE' ? 'primary': ''">remove_red_eye
-                    </v-icon>
-                </v-list-tile-action>
-            </v-list-tile> -->
-
-            <!-- OWNER TILE -->
-            <v-list-tile>
-                <v-list-tile-content>
-                    <v-list-tile-title v-html="clonedAcl.owner"></v-list-tile-title>
-                </v-list-tile-content>
-
-                <v-list-tile-action v-if="clonedAcl.owner === user.id">
-                    <v-icon color="primary">star</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-action>
-                    <v-icon color="primary">create</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-action>
-                    <v-icon color="primary">remove_red_eye</v-icon>
-                </v-list-tile-action>
-            </v-list-tile>
-
-            <!-- WRITERS TILE -->
-            <v-list-tile v-for="(writerId, index) in clonedAcl.canWrite" :key="writerId">
-                <v-list-tile-content>
-                    <v-list-tile-title v-html="writerId"></v-list-tile-title>
-                </v-list-tile-content>
-
-                <v-list-tile-action>
-                    <v-icon @click="onEditClick(writerId, index, true)" color="primary">create</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-action>
-                    <v-icon @click="onReadClick(writerId, index, false)" color="primary">remove_red_eye</v-icon>
-                </v-list-tile-action>
-            </v-list-tile>
-
-            
-            <!-- READERS TILE -->
-            <v-list-tile v-for="(readerId, index) in clonedAcl.canRead" :key="readerId">
-                <v-list-tile-content>
-                    <v-list-tile-title v-html="readerId"></v-list-tile-title>
-                </v-list-tile-content>
-
-                <v-list-tile-action>
-                    <v-icon @click="onEditClick(readerId, index, false)" color="">create</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-action>
-                    <v-icon @click="onReadClick(readerId, index, true)" color="primary">remove_red_eye</v-icon>
-                </v-list-tile-action>
-            </v-list-tile>
-
-            <!-- <v-list-tile v-for="readerId in clonedAcl.canRead" :key="readerId">
+                    <v-list-tile-action>
+                        <v-icon @click="onEditClick(readerId, index, false)" color="">create</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-action>
+                        <v-icon @click="onReadClick(readerId, index, true)" color="primary">remove_red_eye</v-icon>
+                    </v-list-tile-action>
+                </v-list-tile>
                 
-                <v-list-tile-content>
-                    <v-list-tile-title v-html="readerId"></v-list-tile-title>
-                </v-list-tile-content>
-
-                <v-list-tile-action v-if="aclEntry.targetId === user.id">
-                    <v-icon color="primary">star</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-action>
-                    <v-icon @click="onEditClick(aclEntry, index)"
-                            :color="(aclEntry.type !== 'READ' && aclEntry.type !== 'NONE') ? 'primary' : ''">create
-                    </v-icon>
-                </v-list-tile-action>
-                <v-list-tile-action>
-                    <v-icon @click="onReadClick(aclEntry, index)"
-                            :color="aclEntry.type !== 'NONE' ? 'primary': ''">remove_red_eye
-                    </v-icon>
-                </v-list-tile-action>
-            </v-list-tile> -->
-            
-            <v-autocomplete
-                v-model="model"
-                :items="items"
-                :loading="isFetching"
-                :search-input.sync="search"
-                color="white"
-                hide-no-data
-                hide-selected
-                item-text="nickname"
-                item-value="API"
-                placeholder="Insert nickname"
-                return-object flat
-            ></v-autocomplete>
+                <v-autocomplete
+                    v-model="model"
+                    :items="items"
+                    :loading="isFetching"
+                    :search-input.sync="search"
+                    color="white"
+                    hide-no-data
+                    hide-selected
+                    item-text="nickname"
+                    item-value="API"
+                    placeholder="Insert nickname"
+                    return-object flat
+                ></v-autocomplete>
 
             </v-list>
         </v-card-text>
@@ -193,7 +150,11 @@ export default {
                 owner: '',
                 canRead: [],
                 canWrite: []
-            }
+            },
+            idToNickname: {
+
+            },
+            loadingShares: false
         }
     },
     
@@ -250,25 +211,25 @@ export default {
             this.currentNote.acl.canRead.forEach(id => this.clonedAcl.canRead.push(id))
             this.currentNote.acl.canWrite.forEach(id => this.clonedAcl.canWrite.push(id))
 
+            this.loadingShares = true
+            this.loadShares()
             this.showShare = true
         },
         onCancelShare() {
-            this.showShare = false
-            this.clonedAcl = {
-                owner: '',
-                canRead: [],
-                canWrite: []
-            }
-            this.resetSearch()
+            this.onClosedShare()
         },
         onConfirmShare() {
             this.currentNote.acl = this.clonedAcl
+            this.onClosedShare()
+        },
+        onClosedShare() {
             this.showShare = false
             this.clonedAcl = {
                 owner: '',
                 canRead: [],
                 canWrite: []
             }
+            this.idToNickname = {}
             this.resetSearch()
         },
 
@@ -291,6 +252,35 @@ export default {
                 this.setErrorMessage(e.message)
             }
             this.setLoading(false)
+        },
+        async loadShares() {
+            const ids = ([this.clonedAcl.owner].concat(this.clonedAcl.canWrite).concat(this.clonedAcl.canRead)).filter(id => id !== this.user.id)
+            let dones = 0
+            this.idToNickname[this.user.id] = this.user.nickname
+            const checkIfFinished = () => {
+                dones++
+                if(dones >= ids.length)
+                    this.loadingShares = false
+            }
+
+            console.log("searching for " + ids.length +" users");
+            if(ids.length === 0) {
+                this.loadingShares = false
+                return
+            }
+            ids.forEach(id => {
+                firebase.firestore().collection('users').doc(id).get()
+                .then(function(userSnap) {
+                    const user = userSnap.data()
+                    this.idToNickname[id] = user.nickname
+                    checkIfFinished()
+                }.bind(this))
+                .catch(function(error) {
+                    console.error("Cannot load user " + id)
+                    this.idToNickname[id] = "Error loading nickname"
+                    checkIfFinished()
+                }.bind(this))
+            })
         },
 
         resetSearch() {
@@ -334,6 +324,7 @@ export default {
         model(val) {
             if(!this.model || (this.model && !this.model.id)) return
 
+            this.idToNickname[this.model.id] = this.model.nickname
             this.clonedAcl.canRead.push(this.model.id)
             this.resetSearch()
         }
