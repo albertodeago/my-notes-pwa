@@ -5,7 +5,7 @@
         <v-flex xs12 sm6 offset-sm3>
             <v-card class="modifier-card-class"> 
                 <v-card-title>
-                    <template v-if="!editTitle">
+                    <template v-if="!editTitle || !canWrite">
                         <div class="title note-title" @click="enableTitleEditing">{{ currentNote.title }}</div>
                     </template>
                     <template v-else>
@@ -17,7 +17,7 @@
                 </v-card-title>
 
                 <v-card-text>
-                    <template v-if="!editBody">
+                    <template v-if="!editBody || !canWrite">
                         <div class="body note-body" @click="editBody = !editBody">{{ currentNote.body || 'insert note text' }}</div>
                     </template>
                     <template v-else>
@@ -28,10 +28,10 @@
                     </template>
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn flat @click="onDelete">{{ deleteLabel }}</v-btn>
+                    <v-btn flat @click="onDelete" >{{ deleteLabel }}</v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn flat @click="openShare">Share</v-btn>
-                    <v-btn flat @click="onSave">Save</v-btn>
+                    <v-btn flat @click="openShare" v-if="canWrite">Share</v-btn>
+                    <v-btn flat @click="onSave" v-if="canWrite">Save</v-btn>
                     <v-btn flat @click="logNote">log</v-btn>
                 </v-card-actions>
             </v-card>
@@ -48,8 +48,8 @@
         <v-card-text>
             <v-list subheader>
             <!-- <v-subheader>Recent chat</v-subheader> -->
-            <v-list-tile v-for="(aclEntry, index) in clonedAcl" :key="aclEntry.id">
-
+            <!-- <v-list-tile v-for="(aclEntry, index) in clonedAcl" :key="aclEntry.id">
+                
                 <v-list-tile-content>
                     <v-list-tile-title v-html="aclEntry.targetLabel"></v-list-tile-title>
                 </v-list-tile-content>
@@ -67,7 +67,74 @@
                             :color="aclEntry.type !== 'NONE' ? 'primary': ''">remove_red_eye
                     </v-icon>
                 </v-list-tile-action>
+            </v-list-tile> -->
+
+            <!-- OWNER TILE -->
+            <v-list-tile>
+                <v-list-tile-content>
+                    <v-list-tile-title v-html="clonedAcl.owner"></v-list-tile-title>
+                </v-list-tile-content>
+
+                <v-list-tile-action v-if="clonedAcl.owner === user.id">
+                    <v-icon color="primary">star</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-action>
+                    <v-icon color="primary">create</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-action>
+                    <v-icon color="primary">remove_red_eye</v-icon>
+                </v-list-tile-action>
             </v-list-tile>
+
+            <!-- WRITERS TILE -->
+            <v-list-tile v-for="(writerId, index) in clonedAcl.canWrite" :key="writerId">
+                <v-list-tile-content>
+                    <v-list-tile-title v-html="writerId"></v-list-tile-title>
+                </v-list-tile-content>
+
+                <v-list-tile-action>
+                    <v-icon @click="onEditClick(writerId, index, true)" color="primary">create</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-action>
+                    <v-icon @click="onReadClick(writerId, index, false)" color="primary">remove_red_eye</v-icon>
+                </v-list-tile-action>
+            </v-list-tile>
+
+            
+            <!-- READERS TILE -->
+            <v-list-tile v-for="(readerId, index) in clonedAcl.canRead" :key="readerId">
+                <v-list-tile-content>
+                    <v-list-tile-title v-html="readerId"></v-list-tile-title>
+                </v-list-tile-content>
+
+                <v-list-tile-action>
+                    <v-icon @click="onEditClick(readerId, index, false)" color="">create</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-action>
+                    <v-icon @click="onReadClick(readerId, index, true)" color="primary">remove_red_eye</v-icon>
+                </v-list-tile-action>
+            </v-list-tile>
+
+            <!-- <v-list-tile v-for="readerId in clonedAcl.canRead" :key="readerId">
+                
+                <v-list-tile-content>
+                    <v-list-tile-title v-html="readerId"></v-list-tile-title>
+                </v-list-tile-content>
+
+                <v-list-tile-action v-if="aclEntry.targetId === user.id">
+                    <v-icon color="primary">star</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-action>
+                    <v-icon @click="onEditClick(aclEntry, index)"
+                            :color="(aclEntry.type !== 'READ' && aclEntry.type !== 'NONE') ? 'primary' : ''">create
+                    </v-icon>
+                </v-list-tile-action>
+                <v-list-tile-action>
+                    <v-icon @click="onReadClick(aclEntry, index)"
+                            :color="aclEntry.type !== 'NONE' ? 'primary': ''">remove_red_eye
+                    </v-icon>
+                </v-list-tile-action>
+            </v-list-tile> -->
             
             <v-autocomplete
                 v-model="model"
@@ -122,7 +189,11 @@ export default {
             items: [],
             isFetching: false,
             search: null,
-            clonedAcl: []
+            clonedAcl: {
+                owner: '',
+                canRead: [],
+                canWrite: []
+            }
         }
     },
     
@@ -130,7 +201,7 @@ export default {
         ...mapGetters(['currentNote', 'user']),
 
         deleteLabel() {
-            return this.currentNote && this.currentNote.id ? 'Delete' : 'Cancel'
+            return this.currentNote && this.currentNote.id && this.canWrite ? 'Delete' : 'Cancel'
         },
         canWrite() {
             return this.currentNote.acl.owner === this.user.id || this.currentNote.acl.canWrite.includes(this.user.id)
@@ -151,42 +222,58 @@ export default {
             }
             this.editTitle = !this.editTitle
         },
-        onReadClick(aclEntry, index) {
-            if(aclEntry.targetId === this.user.id)
+        onReadClick(id, index, isAReader) {
+            if(id === this.user.id || id === this.currentNote.acl.owner)
                 return
-            if(aclEntry.type === ACLENTRY_TYPE.READ)
-                aclEntry.type = ACLENTRY_TYPE.NONE
-            else
-                aclEntry.type = ACLENTRY_TYPE.READ
+            
+            if(isAReader)
+                this.clonedAcl.canRead.splice(index, 1)
+            else 
+                this.clonedAcl.canWrite.splice(index, 1)
         },
-        onEditClick(aclEntry, index) {
-            if(aclEntry.targetId === this.user.id) 
+        onEditClick(id, index, isAWriter) {
+            if(id === this.user.id || id === this.currentNote.acl.owner) 
                 return
-            if(aclEntry.type === ACLENTRY_TYPE.WRITE) 
-                aclEntry.type = ACLENTRY_TYPE.READ
-            else
-                aclEntry.type = ACLENTRY_TYPE.WRITE
-
+            
+            if(isAWriter) {
+                // demote to a reader
+                this.clonedAcl.canWrite.splice(index, 1)
+                this.clonedAcl.canRead.push(id)
+            } else {
+                // promote to writer
+                this.clonedAcl.canRead.splice(index, 1)
+                this.clonedAcl.canWrite.push(id)
+            }
         },
         openShare() {
-            this.currentNote.acl.forEach(acl => {
-                const clonedEntry = new ACLEntry(acl)
-                this.clonedAcl.push(clonedEntry);
-            });
+            this.clonedAcl.owner = this.currentNote.acl.owner
+            this.currentNote.acl.canRead.forEach(id => this.clonedAcl.canRead.push(id))
+            this.currentNote.acl.canWrite.forEach(id => this.clonedAcl.canWrite.push(id))
+
             this.showShare = true
         },
         onCancelShare() {
             this.showShare = false
-            this.clonedAcl.length = 0
+            this.clonedAcl = {
+                owner: '',
+                canRead: [],
+                canWrite: []
+            }
+            this.resetSearch()
         },
         onConfirmShare() {
             this.currentNote.acl = this.clonedAcl
             this.showShare = false
-            this.clonedAcl.length = 0
+            this.clonedAcl = {
+                owner: '',
+                canRead: [],
+                canWrite: []
+            }
+            this.resetSearch()
         },
 
         async onDelete() {
-            if(this.currentNote.id) {
+            if(this.currentNote.id && this.canWrite) {
                 this.setLoading(true)
                 await this.deleteCurrentNote()
                 this.setLoading(false)                
@@ -204,6 +291,11 @@ export default {
                 this.setErrorMessage(e.message)
             }
             this.setLoading(false)
+        },
+
+        resetSearch() {
+            this.model = null
+            this.items.length = 0
         }
     },
 
@@ -214,19 +306,26 @@ export default {
 
             this.isFetching = true
             try {
-                const snapshot = await firebase.database().ref('users/').once('value')
-                const userList = snapshot.val()
-                const usersMatchingPattern = Object.values(userList).filter(u => u.nickname.indexOf(val) > -1)
-                const isDuplicate = (id) => this.currentNote.acl.find(acl => acl.targetId === id)
-                const remainedUsers = usersMatchingPattern.filter(u => !isDuplicate(u.id))
-
-                if(remainedUsers.length === 0) {
-                    this.items.push({
-                        nickname: 'No users found'
-                    })
-                } else {
-                    this.items = remainedUsers
+                const snapshot = await firebase.firestore().collection('users').get()
+                const usersMatching = [];
+                snapshot.forEach(doc => {
+                    const userSnapshot = doc.data();
+                    if(userSnapshot.nickname.indexOf(val) > -1)
+                        usersMatching.push(userSnapshot);
+                })
+                const isDuplicate = (id) => {
+                    if(id === this.currentNote.acl.owner ||
+                       this.currentNote.acl.canWrite.includes(id) ||
+                       this.currentNote.acl.canRead.includes(id))
+                            return true
+                    return false
                 }
+                const remainedUsers = usersMatching.filter(u => !isDuplicate(u.id))
+                if(remainedUsers.length === 0)
+                    this.items.push({ nickname: 'No users found' })
+                else
+                    remainedUsers.forEach(u => this.items.push(u))
+                
             } catch(e) {
                 console.error(e);
             }
@@ -235,16 +334,8 @@ export default {
         model(val) {
             if(!this.model || (this.model && !this.model.id)) return
 
-            const newAcl = new ACLEntry({
-                type: ACLENTRY_TYPE.READ,
-                targetType: ACLENTRY_TARGET_TYPE.USER,
-                targetId: this.model.id,
-                targetLabel: this.model.nickname
-            })
-
-            this.clonedAcl.push(newAcl)
-            this.model = null
-            this.items.length = 0
+            this.clonedAcl.canRead.push(this.model.id)
+            this.resetSearch()
         }
     }
 }

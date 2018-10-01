@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { NOTE_TYPES, TodoNote, TextNote, NEW_NOTE_FAKE_ID } from '../models/'
+import { NOTE_TYPES, TodoNote, TextNote, NEW_NOTE_FAKE_ID, NoteFactory } from '../models/'
 import Utils from '../Utils'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
@@ -111,59 +111,40 @@ export default {
     this.emptyNotes()
   },
   
-  mounted() {
+  async mounted() {
     this.setLoading(true)
 
-    firebase.firestore().collection("notes").where("acl.owner", "==", this.user.id)
-      .onSnapshot((snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-            if (change.type === "added") {
-                console.log("New note: ", change.doc.data());
-            }
-            if (change.type === "modified") {
-                console.log("Modified note: ", change.doc.data());
-            }
-            if (change.type === "removed") {
-                console.log("Removed note: ", change.doc.data());
-            }
-        });
+    // firebase.firestore().collection("notes").where("acl.owner", "==", this.user.id)
+      // .onSnapshot((snapshot) => {
+      //   snapshot.docChanges().forEach((change) => {
+      //       if (change.type === "added") {
+      //           console.log("New note: ", change.doc.data());
+      //       }
+      //       if (change.type === "modified") {
+      //           console.log("Modified note: ", change.doc.data());
+      //       }
+      //       if (change.type === "removed") {
+      //           console.log("Removed note: ", change.doc.data());
+      //       }
+      //   });
 
-        this.setLoading(false)
-    });
-
-    // const notesRef = firebase.database().ref('notes/');
-    // notesRef.once('value', (snapshot) => {
-    //   const notes = []
-    //   const notesToFilter = snapshot.val();
-    //   const notesToCreate = Object.values(notesToFilter).filter( note => 
-    //     note.acl.find(acl => acl.targetId === this.user.id)
-    //   )
-    //   notesToCreate.forEach(function(childData) {
-    //     const params = childData
-    //     const note = childData.type === NOTE_TYPES.TEXT ? new TextNote(params) : new TodoNote(params) // TODO: create a note builder to handle creations of various notes
-    //     notes.push(note)
-    //   });
-    //   this.setNotes(notes);
-    //   this.setLoading(false)
+        // this.setLoading(false)
     // });
-
-    // notesRef.on('child_added', (data) => {
-    //   // TODO:
-    //   // add element 
-    //   // addCommentElement(postElement, data.key, data.val().text, data.val().author);
-    // });
-
-    // notesRef.on('child_changed', function(data) {
-    //   // TODO:
-    //   // update value of child
-    //   // setCommentValues(postElement, data.key, data.val().text, data.val().author);
-    // });
-
-    // notesRef.on('child_removed', function(data) {
-    //   // TODO:
-    //   // remove child
-    //   // deleteComment(postElement, data.key);
-    // });
+    const querySnapshot1 = await firebase.firestore().collection("notes").where("acl.owner", "==", this.user.id).get();
+    const querySnapshot2 = await firebase.firestore().collection("notes").where("acl.canRead", "array-contains", this.user.id).get();
+    const querySnapshot3 = await firebase.firestore().collection("notes").where("acl.canWrite", "array-contains", this.user.id).get();
+    const notes = []
+    querySnapshot1.forEach( doc => {
+      notes.push( NoteFactory.build(doc.data()) )
+    })
+    querySnapshot2.forEach( doc => {
+      notes.push( NoteFactory.build(doc.data()) )
+    })
+    querySnapshot3.forEach( doc => {
+      notes.push( NoteFactory.build(doc.data()) )
+    })
+    this.setNotes(notes)
+    this.setLoading(false);
   }
 }
 
