@@ -3,11 +3,15 @@
 
       <v-layout column>
 
+                <div class="subheading" v-if="notes.length === 0">
+                  Start adding your notes using the FAB button in the bottom right
+                </div>
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3>
-            <v-card>
+            <v-card v-if="notes.length > 0">
               
               <v-list>
+
                 <template v-for="(note, index) in notes">
 
                   <v-list-tile :key="note.id" @click="openNote(note)">
@@ -88,17 +92,15 @@ export default {
     },
 
     onAddClick(type) {
-      // if(type === NOTE_TYPES.TODO) 
-      //   this.addNote(new TodoNote())
+      let newNote
+      if(type === NOTE_TYPES.TODO) 
+        newNote = new TodoNote()
       
-      if(type === NOTE_TYPES.TEXT) {
-        const newNote = new TextNote()
+      if(type === NOTE_TYPES.TEXT)
+        newNote = new TextNote()
 
-        this.setCurrentNote(newNote);
-
-        this.$router.push(`/note/${NEW_NOTE_FAKE_ID}`);
-      }
-      
+      this.setCurrentNote(newNote);
+      this.$router.push(`/note/${NEW_NOTE_FAKE_ID}`);
     },
 
     toggleFavorite(note) {

@@ -13,7 +13,8 @@
 
     <!-- TOP BAR -->
     <v-toolbar app :clipped-left="clipped">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-btn icon v-if="showBack" @click="goBack"><v-icon>arrow_back</v-icon></v-btn>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer" v-else></v-toolbar-side-icon>
       <v-toolbar-title>{{ title }}</v-toolbar-title>
     </v-toolbar>
     
@@ -47,12 +48,8 @@ export default {
       clipped: false,
       drawer: false,
       fixed: false,
-
-      items: [{
-        icon: 'bubble_chart',
-        title: 'Inspire'
-      }],
-      title: 'My Notes'
+      title: 'My Notes',
+      showBack: false
     }
   },
   
@@ -97,8 +94,22 @@ export default {
         nickname: this.signupNickname
       })
       this.setLoading(false)
+    },
+    
+    goBack() {
+      this.$router.back()
     }
-  }
+  },
+  
+  watch: {
+    $route: function() {
+      console.log("router changed", this.$route.name);
+      if(this.$route.name === "noteDetail")
+        this.showBack = true
+      else 
+        this.showBack = false
+    }
+  },
 }
 </script>
 

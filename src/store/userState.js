@@ -43,7 +43,7 @@ export default {
                     lastUpdate: creationDate,
                     lastLogin: creationDate
                 })
-                await usersCollection.doc(userId).set(user.toObject());
+                await usersCollection.doc(userId).set(user.toJSON());
                 commit('setUser', user)
                 
                 return user
