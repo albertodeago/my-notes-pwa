@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
 
-    <v-layout row>
+    <v-layout row v-if="isLoading">
         <v-flex xs12 sm6 offset-sm3>
             <v-card>
                 <v-card-title>Sign up</v-card-title>
@@ -48,7 +48,7 @@ export default {
         console.log(this, this.$route.params);
     },
     computed: {
-
+        ...mapGetters(['isLoading'])
     },
     methods: {
         ...mapActions(['setLoading', 'signUp']),

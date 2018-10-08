@@ -1,6 +1,7 @@
 {
-  "name": "my-notes-pwa",
+  "name": "My notes pwa",
   "short_name": "my-notes-pwa",
+  "description": "The app let you create notes and todo lists, let you share those with other users and automatically backup on the cloud!",
   "icons": [
     {
       "src": "/static/img/icons/android-chrome-192x192.png",
@@ -13,8 +14,11 @@
       "type": "image/png"
     }
   ],
+  "dir": "rtl",
+  "lang": "en-GB",
   "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#000000",
+  ​​"orientation": "portrait-primary",
+  "background_color": "#ffffff",
   "theme_color": "#4DBA87"
 }

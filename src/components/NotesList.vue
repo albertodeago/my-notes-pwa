@@ -3,7 +3,7 @@
 
       <v-layout column>
 
-                <div class="subheading" v-if="notes.length === 0">
+                <div class="subheading" v-if="notes.length === 0 && !isLoading">
                   Start adding your notes using the FAB button in the bottom right
                 </div>
         <v-layout row>
@@ -39,9 +39,6 @@
           </v-flex>
         </v-layout>
 
-        <router-link to="/signIn">sign in</router-link>
-        <router-link to="/signUp">sign up</router-link>
-
         <v-speed-dial v-model="fab" bottom right fixed direction='top' transition='slide-y-reverse-transition'>
           
           <v-btn slot="activator" v-model="fab" fab>
@@ -64,7 +61,7 @@
 </template>
 
 <script>
-import { NOTE_TYPES, TodoNote, TextNote, NEW_NOTE_FAKE_ID, NoteFactory } from '../models/'
+import { NOTE_TYPES, TodoNote, TextNote, NEW_NOTE_FAKE_ID, NoteFactory, NoteManager } from '../models/'
 import Utils from '../Utils'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
@@ -79,7 +76,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['notes', 'user'])
+    ...mapGetters(['notes', 'user', 'isLoading'])
   },
   methods: {
     ...mapActions(['addNote', 'setLoading']),
@@ -132,21 +129,22 @@ export default {
 
         // this.setLoading(false)
     // });
-    const querySnapshot1 = await firebase.firestore().collection("notes").where("acl.owner", "==", this.user.id).get();
-    const querySnapshot2 = await firebase.firestore().collection("notes").where("acl.canRead", "array-contains", this.user.id).get();
-    const querySnapshot3 = await firebase.firestore().collection("notes").where("acl.canWrite", "array-contains", this.user.id).get();
-    const notes = []
-    querySnapshot1.forEach( doc => {
-      notes.push( NoteFactory.build(doc.data()) )
-    })
-    querySnapshot2.forEach( doc => {
-      notes.push( NoteFactory.build(doc.data()) )
-    })
-    querySnapshot3.forEach( doc => {
-      notes.push( NoteFactory.build(doc.data()) )
-    })
-    this.setNotes(notes)
-    this.setLoading(false);
+    // const querySnapshot1 = await firebase.firestore().collection("notes").where("acl.owner", "==", this.user.id).get();
+    // const querySnapshot2 = await firebase.firestore().collection("notes").where("acl.canRead", "array-contains", this.user.id).get();
+    // const querySnapshot3 = await firebase.firestore().collection("notes").where("acl.canWrite", "array-contains", this.user.id).get();
+    // const notes = []
+    // querySnapshot1.forEach( doc => {
+    //   notes.push( NoteFactory.build(doc.data()) )
+    // })
+    // querySnapshot2.forEach( doc => {
+    //   notes.push( NoteFactory.build(doc.data()) )
+    // })
+    // querySnapshot3.forEach( doc => {
+    //   notes.push( NoteFactory.build(doc.data()) )
+    // })
+    // this.setNotes(notes)
+    await NoteManager.initNotes();
+    this.setLoading(false)
   }
 }
 
@@ -154,5 +152,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.v-list {
+  padding: 0;
+}
 </style>
