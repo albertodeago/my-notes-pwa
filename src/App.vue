@@ -77,7 +77,7 @@ export default {
       this.setLoading(true)
       const res = await this.signIn({email: this.loginEmail, password: this.loginPw})
       this.setLoading(false)
-      console.log("logged", res)
+      // console.log("logged", res)
     },
     async signup() {
       if(this.signupPw !== this.signupConfirmPw) {
@@ -105,7 +105,7 @@ export default {
   
   watch: {
     $route: function() {
-      console.log("router changed", this.$route.name);
+      // console.log("router changed", this.$route.name);
       if(this.$route.name === "noteDetail" || this.$route.name === "settings" || this.$route.name === "credits")
         this.showBack = true
       else 

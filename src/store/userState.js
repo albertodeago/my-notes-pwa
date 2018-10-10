@@ -26,7 +26,6 @@ export default {
          * @returns {User} an instance of User
          */
         async signUp({ commit, dispatch }, {email, password, nickname}) {
-            console.log("VUEX ACTION - signUp", email, password)
             const db = firebase.firestore();
             const usersCollection = db.collection('users');
             try {
@@ -59,10 +58,8 @@ export default {
          * @param {Object} object containing email and password to sign in
          */
         async signIn({ commit, rootState, dispatch }, {email, password}) {
-            console.log("VUEX ACTION - signIn", email, password)
             try {
                 const response = await firebase.auth().signInWithEmailAndPassword(email, password)
-                console.log("VUEX ACTION - signIn - OK", response.user)
                 const user = await dispatch('getUser', response.user)
                 
                 return user
@@ -78,10 +75,8 @@ export default {
          * @param {*} param0 
          */
         async signOut({ commit, dispatch }) {
-            console.log("VUEX ACTION - signOut")
             try {
                 await firebase.auth().signOut()
-                console.log("VUEX ACTION - signOut - OK")
                 commit('setUser', null);
                 
                 return null
@@ -97,14 +92,12 @@ export default {
          * @param {*} firebaseUser 
          */
         async getUser({ commit, rootState, dispatch}, firebaseUser) {
-            console.log("VUEX ACTION - getUser", firebaseUser.uid)
             const db = firebase.firestore();
             const usersCollection = db.collection('users');
             
             try {
                 const snapshot = await usersCollection.doc(firebaseUser.uid).get()
                 const user = snapshot.data();
-                console.log("VUEX ACTION - getUser - OK ", user)
                 commit('setUser', user)
 
                 // TODO: the user logged in, we should update the lastLogin property

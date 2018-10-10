@@ -88,7 +88,6 @@ export default {
             this.$emit('closeDrawer')
         },
         onClick(method) {
-            console.log("on click item", arguments)
             this[method]()
         },
         onSettingsClick() {

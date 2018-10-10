@@ -86,7 +86,7 @@ export default {
     openNote(note) {
       this.setCurrentNote(note);
       this.$router.push('/note/' + note.id);
-      console.log("OPEN NOTE", note.id)
+      // console.log("OPEN NOTE", note.id)
     },
 
     onAddClick(type) {
@@ -102,7 +102,7 @@ export default {
     },
 
     toggleFavorite(note) {
-      console.log("TOGGLE FAVORITE")
+      // console.log("TOGGLE FAVORITE")
       // note.favorite = !note.favorite;
     }
   },

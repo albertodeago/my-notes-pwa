@@ -107,7 +107,7 @@ export default {
                     this.loadingShares = false
             }
 
-            console.log("searching for " + ids.length +" users");
+            // console.log("searching for " + ids.length +" users");
             if(ids.length === 0) {
                 this.loadingShares = false
                 return

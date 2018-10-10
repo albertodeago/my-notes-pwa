@@ -41,7 +41,7 @@ export default {
         }
     },
     mounted() {
-        console.log(this, this.$route.params);
+        // console.log(this, this.$route.params);
     },
     computed: {
         ...mapGetters(['isLoading'])
