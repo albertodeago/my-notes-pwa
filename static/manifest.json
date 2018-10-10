@@ -1,6 +1,6 @@
 {
   "name": "My notes pwa",
-  "short_name": "my-notes-pwa",
+  "short_name": "Pwa notes",
   "description": "The app let you create notes and todo lists, let you share those with other users and automatically backup on the cloud!",
   "icons": [
     {
