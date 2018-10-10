@@ -4,6 +4,7 @@ import { TextNote } from '../models'
 import userState from './UserState'
 import notesState from './notesState'
 
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -13,15 +14,18 @@ export default new Vuex.Store({
     },
     state: {
         isLoading: false,
-        errorMessage: ''
+        errorMessage: '',
+        darkTheme: false
     },
     getters: {
         isLoading(state) { return state.isLoading },
-        errorMessage(state) { return state.errorMessage }
+        errorMessage(state) { return state.errorMessage },
+        darkTheme(state) { return state.darkTheme }
     },
     mutations: {
         setLoading(state, isLoading) { state.isLoading = isLoading },
-        setErrorMessage(state, message) { state.errorMessage = message }
+        setErrorMessage(state, message) { state.errorMessage = message },
+        setDarkTheme(state, val) { state.darkTheme = val }
     },
     actions: {
         setLoading({commit}, isLoading) {

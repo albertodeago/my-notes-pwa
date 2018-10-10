@@ -5,8 +5,8 @@ import NotesList from '@/components/NotesList'
 import NoteDetail from '@/components/NoteDetail'
 import SignIn from '@/components/auth/SignIn'
 import SignUp from '@/components/auth/SignUp'
+import Settings from '@/components/menu/Settings.vue'
 
-import { NOTE_TYPES } from '../models'
 
 Vue.use(Router)
 
@@ -33,6 +33,12 @@ export default new Router({
       path: '/note/:id',
       name: 'noteDetail',
       component: NoteDetail,
+      beforeEnter: AuthGuard
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: Settings,
       beforeEnter: AuthGuard
     },
     {

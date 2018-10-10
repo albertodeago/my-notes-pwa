@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :dark="darkTheme">
 
     <!-- LOADER -->
     <div class="loader-wrapper" v-if="isLoading">
@@ -35,6 +35,8 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import SideMenu from './components/SideMenu.vue'
+import Enums from './config/enums'
+import Utils from './Utils'
 
 export default {
   name: 'App',
@@ -45,16 +47,16 @@ export default {
 
   data () {
     return {
+      title: 'My Notes',
       clipped: false,
       drawer: false,
       fixed: false,
-      title: 'My Notes',
       showBack: false
     }
   },
   
   computed: {
-    ...mapGetters(['user', 'isLoading', 'errorMessage']),
+    ...mapGetters(['user', 'isLoading', 'errorMessage', 'darkTheme']),
 
     isUserLogged() {
       return !this.user
@@ -104,12 +106,18 @@ export default {
   watch: {
     $route: function() {
       console.log("router changed", this.$route.name);
-      if(this.$route.name === "noteDetail")
+      if(this.$route.name === "noteDetail" || this.$route.name === "settings")
         this.showBack = true
       else 
         this.showBack = false
     }
   },
+
+  mounted() {
+    const cookie = !!Utils.getCookie(Enums.DARK_THEME_COOKIE)
+    if(cookie)
+      this.$store.commit("setDarkTheme", cookie)
+  }
 }
 </script>
 

@@ -53,9 +53,9 @@ export default {
             avatar: 'account_circle',   // TODO: should be the user avatar
 
             items: [{
-                icon: 'bubble_chart',
-                title: 'Inspire',
-                method: 'onInspire'
+                    icon: 'build',
+                    title: 'Settings',
+                    method: 'onSettingsClick'
             }],
         }
     },
@@ -84,8 +84,8 @@ export default {
             console.log("on click item", arguments)
             this[method]()
         },
-        onInspire() {
-            console.log("on inspire")
+        onSettingsClick() {
+            this.$router.push(`/settings`);
         }
     }
 }
