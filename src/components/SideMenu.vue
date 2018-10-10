@@ -52,11 +52,18 @@ export default {
         return {
             avatar: 'account_circle',   // TODO: should be the user avatar
 
-            items: [{
+            items: [
+                {
                     icon: 'build',
                     title: 'Settings',
                     method: 'onSettingsClick'
-            }],
+                },
+                {
+                    icon: 'card_giftcard',
+                    title: 'Credits',
+                    method: 'onCreditsClick'
+                }
+            ],
         }
     },
 
@@ -85,7 +92,10 @@ export default {
             this[method]()
         },
         onSettingsClick() {
-            this.$router.push(`/settings`);
+            this.$router.push('/settings');
+        },
+        onCreditsClick() {
+            this.$router.push('/credits')
         }
     }
 }

@@ -6,6 +6,7 @@ import NoteDetail from '@/components/NoteDetail'
 import SignIn from '@/components/auth/SignIn'
 import SignUp from '@/components/auth/SignUp'
 import Settings from '@/components/menu/Settings.vue'
+import Credits from '@/components/menu/Credits.vue'
 
 
 Vue.use(Router)
@@ -39,6 +40,12 @@ export default new Router({
       path: '/settings',
       name: 'settings',
       component: Settings,
+      beforeEnter: AuthGuard
+    },
+    {
+      path: '/credits',
+      name: 'credits',
+      component: Credits,
       beforeEnter: AuthGuard
     },
     {

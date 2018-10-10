@@ -106,7 +106,7 @@ export default {
   watch: {
     $route: function() {
       console.log("router changed", this.$route.name);
-      if(this.$route.name === "noteDetail" || this.$route.name === "settings")
+      if(this.$route.name === "noteDetail" || this.$route.name === "settings" || this.$route.name === "credits")
         this.showBack = true
       else 
         this.showBack = false
