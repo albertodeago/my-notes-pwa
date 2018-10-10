@@ -27,12 +27,12 @@ class NoteManager {
             .onSnapshot((snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
-                        console.log("New note: ", change.doc.data());
+                        // console.log("New note: ", change.doc.data());
                         this.notes.unshift(NoteFactory.build(change.doc.data()))
                         store.commit("setNotes", this.notes)
                     }
                     if (change.type === "modified") {
-                        console.log("Modified note: ", change.doc.data());
+                        // console.log("Modified note: ", change.doc.data());
                         const noteObj = change.doc.data()
                         const index = this.notes.findIndex(n => !n.id || n.id === noteObj.id)
                         this.notes.splice(index, 1)
@@ -40,7 +40,7 @@ class NoteManager {
                         store.commit("setNotes", this.notes)
                     }
                     if (change.type === "removed") {
-                        console.log("Removed note: ", change.doc.data());
+                        // console.log("Removed note: ", change.doc.data());
                         const noteId = change.doc.data().id
                         const index = this.notes.findIndex(n => n.id === noteId)
                         this.notes.splice(index, 1)
@@ -52,12 +52,12 @@ class NoteManager {
             .onSnapshot((snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
-                        console.log("New note: ", change.doc.data());
+                        // console.log("New note: ", change.doc.data());
                         this.notes.unshift(NoteFactory.build(change.doc.data()))
                         store.commit("setNotes", this.notes)
                     }
                     if (change.type === "modified") {
-                        console.log("Modified note: ", change.doc.data());
+                        // console.log("Modified note: ", change.doc.data());
                         const noteObj = change.doc.data()
                         const index = this.notes.findIndex(n => !n.id || n.id === noteObj.id)
                         this.notes.splice(index, 1)
@@ -65,7 +65,7 @@ class NoteManager {
                         store.commit("setNotes", this.notes)
                     }
                     if (change.type === "removed") {
-                        console.log("Removed note: ", change.doc.data());
+                        // console.log("Removed note: ", change.doc.data());
                         const noteId = change.doc.data().id
                         const index = this.notes.findIndex(n => n.id === noteId)
                         this.notes.splice(index, 1)
@@ -77,12 +77,12 @@ class NoteManager {
             .onSnapshot((snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
-                        console.log("New note: ", change.doc.data());
+                        // console.log("New note: ", change.doc.data());
                         this.notes.unshift(NoteFactory.build(change.doc.data()))
                         store.commit("setNotes", this.notes)
                     }
                     if (change.type === "modified") {
-                        console.log("Modified note: ", change.doc.data());
+                        // console.log("Modified note: ", change.doc.data());
                         const noteObj = change.doc.data()
                         const index = this.notes.findIndex(n => !n.id || n.id === noteObj.id)
                         this.notes.splice(index, 1)
@@ -90,7 +90,7 @@ class NoteManager {
                         store.commit("setNotes", this.notes)
                     }
                     if (change.type === "removed") {
-                        console.log("Removed note: ", change.doc.data());
+                        // console.log("Removed note: ", change.doc.data());
                         const noteId = change.doc.data().id
                         const index = this.notes.findIndex(n => n.id === noteId)
                         this.notes.splice(index, 1)

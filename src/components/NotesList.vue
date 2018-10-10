@@ -3,9 +3,10 @@
 
       <v-layout column>
 
-                <div class="subheading" v-if="notes.length === 0 && !isLoading">
-                  Start adding your notes using the FAB button in the bottom right
-                </div>
+        <div class="subheading" v-if="notes.length === 0 && !isLoading">
+          Start adding your notes using the FAB button in the bottom right
+        </div>
+        
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3>
             <v-card v-if="notes.length > 0">
@@ -15,10 +16,10 @@
                 <template v-for="(note, index) in notes">
 
                   <v-list-tile :key="note.id" @click="openNote(note)">
-                    <v-list-tile-action @click.stop="toggleFavorite(note)">
+                    <!-- <v-list-tile-action @click.stop="toggleFavorite(note)">
                       <v-icon v-if="false && note.favorite" color="amber darken-1">star</v-icon>
                       <v-icon v-else>star</v-icon>
-                    </v-list-tile-action>
+                    </v-list-tile-action> -->
 
                     <v-list-tile-content>
                       <v-list-tile-title v-text="note.title"></v-list-tile-title>
@@ -96,8 +97,8 @@ export default {
       if(type === NOTE_TYPES.TEXT)
         newNote = new TextNote()
 
-      this.setCurrentNote(newNote);
-      this.$router.push(`/note/${NEW_NOTE_FAKE_ID}`);
+      this.setCurrentNote(newNote)
+      this.$router.push(`/note/${NEW_NOTE_FAKE_ID}`)
     },
 
     toggleFavorite(note) {
@@ -112,37 +113,6 @@ export default {
   
   async mounted() {
     this.setLoading(true)
-
-    // firebase.firestore().collection("notes").where("acl.owner", "==", this.user.id)
-      // .onSnapshot((snapshot) => {
-      //   snapshot.docChanges().forEach((change) => {
-      //       if (change.type === "added") {
-      //           console.log("New note: ", change.doc.data());
-      //       }
-      //       if (change.type === "modified") {
-      //           console.log("Modified note: ", change.doc.data());
-      //       }
-      //       if (change.type === "removed") {
-      //           console.log("Removed note: ", change.doc.data());
-      //       }
-      //   });
-
-        // this.setLoading(false)
-    // });
-    // const querySnapshot1 = await firebase.firestore().collection("notes").where("acl.owner", "==", this.user.id).get();
-    // const querySnapshot2 = await firebase.firestore().collection("notes").where("acl.canRead", "array-contains", this.user.id).get();
-    // const querySnapshot3 = await firebase.firestore().collection("notes").where("acl.canWrite", "array-contains", this.user.id).get();
-    // const notes = []
-    // querySnapshot1.forEach( doc => {
-    //   notes.push( NoteFactory.build(doc.data()) )
-    // })
-    // querySnapshot2.forEach( doc => {
-    //   notes.push( NoteFactory.build(doc.data()) )
-    // })
-    // querySnapshot3.forEach( doc => {
-    //   notes.push( NoteFactory.build(doc.data()) )
-    // })
-    // this.setNotes(notes)
     await NoteManager.initNotes();
     this.setLoading(false)
   }
