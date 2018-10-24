@@ -27,6 +27,12 @@
       <v-fade-transition mode="out-in">
         <router-view/>
       </v-fade-transition>
+
+      <v-snackbar v-model="snackbar" bottom :timeout="0" vertical>
+        We use cookies to ensure you get the best experience on our website. 
+      <v-btn flat @click="onCloseSnackbar">Got it!</v-btn>
+    </v-snackbar>
+
     </v-content>
 
   </v-app>
@@ -51,7 +57,8 @@ export default {
       clipped: false,
       drawer: false,
       fixed: false,
-      showBack: false
+      showBack: false,
+      snackbar: false
     }
   },
   
@@ -97,6 +104,11 @@ export default {
       })
       this.setLoading(false)
     },
+
+    onCloseSnackbar() {
+      this.snackbar = false
+      Utils.setCookie(Enums.COOKIE_CONSENT, true, 30);
+    },
     
     goBack() {
       this.$router.back()
@@ -117,6 +129,10 @@ export default {
     const cookie = !!Utils.getCookie(Enums.DARK_THEME_COOKIE)
     if(cookie)
       this.$store.commit("setDarkTheme", cookie)
+
+    const snackbarCookie = !!Utils.getCookie(Enums.COOKIE_CONSENT)
+    if(!snackbarCookie)
+      this.snackbar = true
   }
 }
 </script>
