@@ -8,7 +8,7 @@ Using firebase every share or modify made on notes will be real time updated to 
 - [x] Share notes with other users
 - [x] Grand read-only or read and write ability to other users on shares
 - [x] Ability to add on home screen on phones
-- [ ] Banner because we save some cookies
+- [x] Banner because we save some cookies
 - [ ] Add avatar to users
 - [ ] Add a chat between users, or the possibility to comment notes
 - [ ] Support push notificaitons
