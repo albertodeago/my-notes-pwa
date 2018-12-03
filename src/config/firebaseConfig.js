@@ -4,6 +4,5 @@ export default {
     databaseURL: "https://my-notes88.firebaseio.com",
     projectId: "my-notes88",
     storageBucket: "",
-    messagingSenderId: "585594638044",
-    databaseURL: "https://my-notes88.firebaseio.com",
+    messagingSenderId: "585594638044"
 };

@@ -6,6 +6,5 @@ export default {
     databaseURL: "your_databaseURL",
     projectId: "your_projectId",
     storageBucket: "your_storageBucket",
-    messagingSenderId: "your_messagingSenderId",
-    databaseURL: "your_databaseURL",
+    messagingSenderId: "your_messagingSenderId"
 };
